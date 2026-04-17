@@ -13,30 +13,20 @@ using TP.ConcurrentProgramming.Presentation.ViewModel;
 
 namespace TP.ConcurrentProgramming.PresentationView
 {
-  /// <summary>
-  /// View implementation
-  /// </summary>
-  public partial class MainWindow : Window
-  {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-      Random random = new Random();
-      InitializeComponent();
-      MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-      double screenWidth = SystemParameters.PrimaryScreenWidth;
-      double screenHeight = SystemParameters.PrimaryScreenHeight;
-      viewModel.Start(random.Next(5, 10));
-    }
+        public MainWindow()
+        {
+            InitializeComponent();
+            // Usunięto generowanie losowej liczby i ręczne wywołanie Start().
+            // Inicjalizacją zajmuje się teraz użytkownik poprzez GUI i ViewModel.
+        }
 
-    /// <summary>
-    /// Raises the <seealso cref="System.Windows.Window.Closed"/> event.
-    /// </summary>
-    /// <param name="e">An <see cref="EventArgs"/> that contains the event data.</param>
-    protected override void OnClosed(EventArgs e)
-    {
-      if (DataContext is MainWindowViewModel viewModel)
-        viewModel.Dispose();
-      base.OnClosed(e);
+        protected override void OnClosed(EventArgs e)
+        {
+            if (DataContext is MainWindowViewModel viewModel)
+                viewModel.Dispose();
+            base.OnClosed(e);
+        }
     }
-  }
 }

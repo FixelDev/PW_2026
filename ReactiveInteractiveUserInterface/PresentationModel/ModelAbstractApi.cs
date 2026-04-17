@@ -21,7 +21,8 @@ namespace TP.ConcurrentProgramming.Presentation.Model
 
   public abstract class ModelAbstractApi : IObservable<IBall>, IDisposable
   {
-    public static ModelAbstractApi CreateModel()
+        public abstract void Stop();
+        public static ModelAbstractApi CreateModel()
     {
       return modelInstance.Value;
     }

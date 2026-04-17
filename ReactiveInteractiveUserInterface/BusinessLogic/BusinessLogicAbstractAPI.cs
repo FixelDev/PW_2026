@@ -12,9 +12,10 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 {
   public abstract class BusinessLogicAbstractAPI : IDisposable
   {
-    #region Layer Factory
+        public abstract void Stop();
+        #region Layer Factory
 
-    public static BusinessLogicAbstractAPI GetBusinessLogicLayer()
+        public static BusinessLogicAbstractAPI GetBusinessLogicLayer()
     {
       return modelInstance.Value;
     }
@@ -23,7 +24,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 
     #region Layer API
 
-    public static readonly Dimensions GetDimensions = new(10.0, 10.0, 10.0);
+    public static readonly Dimensions GetDimensions = new(20.0, 420.0, 400.0);
 
     public abstract void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler);
 

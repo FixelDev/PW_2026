@@ -10,11 +10,13 @@
 
 namespace TP.ConcurrentProgramming.Data
 {
+
   public abstract class DataAbstractAPI : IDisposable
   {
-    #region Layer Factory
+        public abstract void Stop();
+        #region Layer Factory
 
-    public static DataAbstractAPI GetDataLayer()
+        public static DataAbstractAPI GetDataLayer()
     {
       return modelInstance.Value;
     }
@@ -59,4 +61,6 @@ namespace TP.ConcurrentProgramming.Data
 
     IVector Velocity { get; set; }
   }
+
 }
+

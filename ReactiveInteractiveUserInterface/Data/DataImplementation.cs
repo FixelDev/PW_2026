@@ -15,38 +15,48 @@ namespace TP.ConcurrentProgramming.Data
 {
   internal class DataImplementation : DataAbstractAPI
   {
-    #region ctor
+        #region ctor
 
-    public DataImplementation()
-    {
-      MoveTimer = new Timer(Move, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(100));
-    }
+        public DataImplementation()
+        {
+            // Ustawiamy timer na Timeout.Infinite, żeby nie działał od razu po uruchomieniu programu
+            MoveTimer = new Timer(Move, null, Timeout.Infinite, Timeout.Infinite);
+        }
 
-    #endregion ctor
+        public override void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler)
+        {
+            if (Disposed)
+                throw new ObjectDisposedException(nameof(DataImplementation));
+            if (upperLayerHandler == null)
+                throw new ArgumentNullException(nameof(upperLayerHandler));
 
-    #region DataAbstractAPI
+            Random random = new Random();
+            for (int i = 0; i < numberOfBalls; i++)
+            {
+                Vector startingPosition = new(random.Next(100, 400 - 100), random.Next(100, 400 - 100));
+                Ball newBall = new(startingPosition, startingPosition);
+                upperLayerHandler(startingPosition, newBall);
+                BallsList.Add(newBall);
+            }
 
-    public override void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler)
-    {
-      if (Disposed)
-        throw new ObjectDisposedException(nameof(DataImplementation));
-      if (upperLayerHandler == null)
-        throw new ArgumentNullException(nameof(upperLayerHandler));
-      Random random = new Random();
-      for (int i = 0; i < numberOfBalls; i++)
-      {
-        Vector startingPosition = new(random.Next(100, 400 - 100), random.Next(100, 400 - 100));
-        Ball newBall = new(startingPosition, startingPosition);
-        upperLayerHandler(startingPosition, newBall);
-        BallsList.Add(newBall);
-      }
-    }
+            // Uruchamiamy timer (odpali się natychmiast i będzie pikał co 100ms)
+            MoveTimer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(16.6));
+        }
 
-    #endregion DataAbstractAPI
+        // DODAJ TĘ METODĘ:
+        public override void Stop()
+        {
+            // Zatrzymujemy timer
+            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            // Czyścimy listę kul w warstwie danych
+            BallsList.Clear();
+        }
 
-    #region IDisposable
+        #endregion DataAbstractAPI
 
-    protected virtual void Dispose(bool disposing)
+        #region IDisposable
+
+        protected virtual void Dispose(bool disposing)
     {
       if (!Disposed)
       {

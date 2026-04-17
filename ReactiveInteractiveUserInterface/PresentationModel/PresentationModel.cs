@@ -23,7 +23,11 @@ namespace TP.ConcurrentProgramming.Presentation.Model
     internal ModelImplementation() : this(null)
     { }
 
-    internal ModelImplementation(UnderneathLayerAPI underneathLayer)
+        public override void Stop()
+        {
+            layerBellow.Stop();
+        }
+        internal ModelImplementation(UnderneathLayerAPI underneathLayer)
     {
       layerBellow = underneathLayer == null ? UnderneathLayerAPI.GetBusinessLogicLayer() : underneathLayer;
       eventObservable = Observable.FromEventPattern<BallChaneEventArgs>(this, "BallChanged");
