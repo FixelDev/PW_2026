@@ -38,7 +38,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
                 }
                 if(e.x > dimensions.TableWidth - dimensions.BallDimension )
                 {
-                    new_x = dimensions.TableWidth - dimensions.BallDimension - 8;
+                    new_x = dimensions.TableWidth - dimensions.BallDimension;
                 }
                 if (e.y < 0 )
                 {
@@ -46,7 +46,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
                 }
                 if (e.y > dimensions.TableHeight - dimensions.BallDimension)
                 {
-                    new_y = dimensions.TableHeight - dimensions.BallDimension -8 ;
+                    new_y = dimensions.TableHeight - dimensions.BallDimension;
                 }
             }
     NewPositionNotification?.Invoke(this, new Position(new_x, new_y));

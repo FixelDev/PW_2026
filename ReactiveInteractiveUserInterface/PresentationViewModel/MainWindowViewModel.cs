@@ -9,7 +9,8 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input; // Wymagane dla ICommand
+using System.Windows.Input;
+using TP.ConcurrentProgramming.BusinessLogic;
 using TP.ConcurrentProgramming.Presentation.Model;
 using TP.ConcurrentProgramming.Presentation.ViewModel.MVVMLight;
 using ModelIBall = TP.ConcurrentProgramming.Presentation.Model.IBall;
@@ -28,7 +29,6 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             ModelLayer = modelLayerAPI == null ? ModelAbstractApi.CreateModel() : modelLayerAPI;
             Observer = ModelLayer.Subscribe<ModelIBall>(x => Balls.Add(x));
 
-            // Inicjalizacja komend
             StartCommand = new RelayCommand(ExecuteStart, CanExecuteStart);
             StopCommand = new RelayCommand(ExecuteStop, CanExecuteStop);
         }
@@ -39,7 +39,6 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 
         public ObservableCollection<ModelIBall> Balls { get; } = new ObservableCollection<ModelIBall>();
 
-        // Właściwość zbindowana do pola tekstowego
         private int _numberOfBalls = 5;
         public int NumberOfBalls
         {
@@ -54,9 +53,51 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             }
         }
 
-        // Komendy zbindowane do przycisków
         public ICommand StartCommand { get; }
         public ICommand StopCommand { get; }
+
+        private double _viewWidth = BusinessLogicAbstractAPI.GetDimensions.TableWidth;
+        public double ViewWidth
+        {
+            get => _viewWidth;
+            set { _viewWidth = value; RaisePropertyChanged(); }
+        }
+
+        private double _viewHeight = BusinessLogicAbstractAPI.GetDimensions.TableHeight;
+        public double ViewHeight
+        {
+            get => _viewHeight;
+            set { _viewHeight = value; RaisePropertyChanged(); }
+        }
+
+        private double _borderThickness = 4.0; 
+        public double BorderThickness
+        {
+            get => _borderThickness;
+            set
+            {
+                if (_borderThickness != value)
+                {
+                    _borderThickness = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double _ballDiameter = BusinessLogicAbstractAPI.GetDimensions.BallDimension;
+        public double BallDiameter
+        {
+            get => _ballDiameter;
+            set
+            {
+                if (_ballDiameter != value)
+                {
+                    _ballDiameter = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
 
         #endregion public API
 
@@ -66,13 +107,13 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 
         private void ExecuteStart()
         {
+
+            
             if (Disposed)
                 throw new ObjectDisposedException(nameof(MainWindowViewModel));
 
-            ModelLayer.Start(NumberOfBalls);
+            ModelLayer.Start(NumberOfBalls, ViewWidth, ViewHeight, BorderThickness, BallDiameter);
             _isRunning = true;
-
-            // Odświeżenie stanu przycisków (aktywny/nieaktywny)
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
         }
@@ -84,15 +125,12 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 
         private void ExecuteStop()
         {
-            // 1. Zatrzymujemy logikę i timer w warstwach niższych
             ModelLayer.Stop();
 
-            // 2. Czyścimy kolekcję w widoku (żeby kule zniknęły z ekranu)
             Balls.Clear();
 
             _isRunning = false;
 
-            // Odświeżenie stanu przycisków
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
         }

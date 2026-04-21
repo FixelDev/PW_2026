@@ -8,29 +8,47 @@
 //
 //_____________________________________________________________________________________________________________________________________
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+
 namespace TP.ConcurrentProgramming.Data.Test
 {
-  [TestClass]
-  public class BallUnitTest
-  {
-    [TestMethod]
-    public void ConstructorTestMethod()
+    [TestClass]
+    public class BallUnitTest
     {
-      Vector testinVector = new Vector(0.0, 0.0);
-      Ball newInstance = new(testinVector, testinVector);
-    }
+        [TestMethod]
+        public void ConstructorTestMethod()
+        {
+            Vector initialPosition = new Vector(0.0, 0.0);
+            Vector initialVelocity = new Vector(1.0, 1.0);
 
-    [TestMethod]
-    public void MoveTestMethod()
-    {
-      Vector initialPosition = new(10.0, 10.0);
-      Ball newInstance = new(initialPosition, new Vector(0.0, 0.0));
-      IVector curentPosition = new Vector(0.0, 0.0);
-      int numberOfCallBackCalled = 0;
-      newInstance.NewPositionNotification += (sender, position) => { Assert.IsNotNull(sender); curentPosition = position; numberOfCallBackCalled++; };
-      newInstance.Move(new Vector(0.0, 0.0));
-      Assert.AreEqual<int>(1, numberOfCallBackCalled);
-      Assert.AreEqual<IVector>(initialPosition, curentPosition);
+            Ball newInstance = new(initialPosition, initialVelocity);
+
+            Assert.AreEqual<IVector>(initialVelocity, newInstance.Velocity);
+        }
+
+        [TestMethod]
+        public void MoveTestMethod()
+        {
+            Vector initialPosition = new(10.0, 10.0);
+            Vector initialVelocity = new(2.0, 3.0);
+            Ball newInstance = new(initialPosition, initialVelocity);
+
+            IVector currentPosition = new Vector(0.0, 0.0);
+            int numberOfCallBackCalled = 0;
+
+            newInstance.NewPositionNotification += (sender, position) =>
+            {
+                Assert.IsNotNull(sender);
+                currentPosition = position;
+                numberOfCallBackCalled++;
+            };
+
+            newInstance.Move(new Vector(2.0, 3.0));
+
+            Assert.AreEqual<int>(1, numberOfCallBackCalled);
+            Assert.AreEqual<double>(12.0, currentPosition.x);
+            Assert.AreEqual<double>(13.0, currentPosition.y);
+        }
     }
-  }
 }

@@ -19,7 +19,6 @@ namespace TP.ConcurrentProgramming.Data
 
         public DataImplementation()
         {
-            // Ustawiamy timer na Timeout.Infinite, żeby nie działał od razu po uruchomieniu programu
             MoveTimer = new Timer(Move, null, Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -39,16 +38,13 @@ namespace TP.ConcurrentProgramming.Data
                 BallsList.Add(newBall);
             }
 
-            // Uruchamiamy timer (odpali się natychmiast i będzie pikał co 100ms)
             MoveTimer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(16.6));
         }
 
-        // DODAJ TĘ METODĘ:
         public override void Stop()
         {
-            // Zatrzymujemy timer
             MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            // Czyścimy listę kul w warstwie danych
+ 
             BallsList.Clear();
         }
 
@@ -92,7 +88,7 @@ namespace TP.ConcurrentProgramming.Data
     private void Move(object? x)
     {
       foreach (Ball item in BallsList)
-        item.Move(new Vector((RandomGenerator.NextDouble() - 0.5) * 10, (RandomGenerator.NextDouble() - 0.5) * 10));
+        item.Move(new Vector((RandomGenerator.NextDouble() - 0.5) * 30, (RandomGenerator.NextDouble() - 0.5) * 30));
     }
 
     #endregion private

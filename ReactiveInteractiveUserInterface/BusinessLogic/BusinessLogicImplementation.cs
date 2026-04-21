@@ -40,20 +40,22 @@ namespace TP.ConcurrentProgramming.BusinessLogic
       Disposed = true;
     }
 
-    public override void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler)
-    {
-      if (Disposed)
-        throw new ObjectDisposedException(nameof(BusinessLogicImplementation));
-      if (upperLayerHandler == null)
-        throw new ArgumentNullException(nameof(upperLayerHandler));
-      layerBellow.Start(numberOfBalls, (startingPosition, databall) => upperLayerHandler(new Position(startingPosition.x, startingPosition.y), new Ball(databall)));
-    }
+        public override void Start(int numberOfBalls, double ballDiameter, Action<IPosition, IBall> upperLayerHandler)
+        {
+            if (Disposed) throw new ObjectDisposedException(nameof(BusinessLogicImplementation));
+            if (upperLayerHandler == null) throw new ArgumentNullException(nameof(upperLayerHandler));
 
-    #endregion BusinessLogicAbstractAPI
+      
+            BusinessLogicAbstractAPI.GetDimensions = new Dimensions(ballDiameter, GetDimensions.TableHeight, GetDimensions.TableWidth);
 
-    #region private
+            layerBellow.Start(numberOfBalls, (startingPosition, databall) => upperLayerHandler(new Position(startingPosition.x, startingPosition.y), new Ball(databall)));
+        }
 
-    private bool Disposed = false;
+        #endregion BusinessLogicAbstractAPI
+
+        #region private
+
+        private bool Disposed = false;
 
     private readonly UnderneathLayerAPI layerBellow;
 

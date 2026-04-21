@@ -18,8 +18,6 @@ namespace TP.ConcurrentProgramming.PresentationView
         public MainWindow()
         {
             InitializeComponent();
-            // Usunięto generowanie losowej liczby i ręczne wywołanie Start().
-            // Inicjalizacją zajmuje się teraz użytkownik poprzez GUI i ViewModel.
         }
 
         protected override void OnClosed(EventArgs e)
