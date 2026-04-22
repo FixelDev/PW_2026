@@ -30,7 +30,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         {
             Assert.AreEqual<Dimensions>(new Dimensions(20.0, 420.0, 400.0), BusinessLogicAbstractAPI.GetDimensions);
 
-        
+
             Dimensions newDimensions = new Dimensions(30.0, 500.0, 500.0);
             BusinessLogicAbstractAPI.GetDimensions = newDimensions;
             Assert.AreEqual<Dimensions>(newDimensions, BusinessLogicAbstractAPI.GetDimensions);

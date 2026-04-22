@@ -39,7 +39,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
             newInstance.CheckObjectDisposed(x => newInstanceDisposed = x);
             Assert.IsTrue(newInstanceDisposed);
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Dispose());
-    
+
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, 20.0, (position, ball) => { }));
             Assert.IsTrue(dataLayerFixcure.Disposed);
         }
@@ -54,7 +54,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
                 int numberOfBalls2Create = 10;
                 double ballDiameter = 20.0;
 
-               
+
                 newInstance.Start(
                   numberOfBalls2Create,
                   ballDiameter,
@@ -76,9 +76,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
                 Assert.IsTrue(dataLayerFixcure.StopCalled);
             }
         }
-
-        #region testing instrumentation
-
         private class DataLayerConstructorFixcure : Data.DataAbstractAPI
         {
             public override void Dispose() { }
@@ -132,13 +129,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
             private class DataBallFixture : Data.IBall
             {
-    
+
                 public IVector Velocity { get; set; } = new DataVectorFixture();
 
                 public event EventHandler<IVector>? NewPositionNotification = null;
             }
         }
-
-        #endregion testing instrumentation
     }
 }

@@ -17,8 +17,8 @@ using LogicIBall = TP.ConcurrentProgramming.BusinessLogic.IBall;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
 {
-  internal class ModelBall : IBall
-  {
+    internal class ModelBall : IBall
+    {
         private readonly double _scaleX;
         private readonly double _scaleY;
 
@@ -30,72 +30,59 @@ namespace TP.ConcurrentProgramming.Presentation.Model
             TopBackingField = top * _scaleY;
             LeftBackingField = left * _scaleX;
             underneathBall.NewPositionNotification += NewPositionNotification;
-    }
+        }
 
-    #region IBall
 
-    public double Top
-    {
-      get { return TopBackingField; }
-      private set
-      {
-        if (TopBackingField == value)
-          return;
-        TopBackingField = value;
-        RaisePropertyChanged();
-      }
-    }
+        public double Top
+        {
+            get { return TopBackingField; }
+            private set
+            {
+                if (TopBackingField == value)
+                    return;
+                TopBackingField = value;
+                RaisePropertyChanged();
+            }
+        }
 
-    public double Left
-    {
-      get { return LeftBackingField; }
-      private set
-      {
-        if (LeftBackingField == value)
-          return;
-        LeftBackingField = value;
-        RaisePropertyChanged();
-      }
-    }
+        public double Left
+        {
+            get { return LeftBackingField; }
+            private set
+            {
+                if (LeftBackingField == value)
+                    return;
+                LeftBackingField = value;
+                RaisePropertyChanged();
+            }
+        }
 
-    public double Diameter { get; init; } = 0;
+        public double Diameter { get; init; } = 0;
 
-    #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
 
-    public event PropertyChangedEventHandler PropertyChanged;
+        private double TopBackingField;
+        private double LeftBackingField;
 
-    #endregion INotifyPropertyChanged
-
-    #endregion IBall
-
-    #region private
-
-    private double TopBackingField;
-    private double LeftBackingField;
-
-    private void NewPositionNotification(object sender, IPosition e)
-    {
+        private void NewPositionNotification(object sender, IPosition e)
+        {
             Top = e.y * _scaleY;
             Left = e.x * _scaleX;
         }
 
-    private void RaisePropertyChanged([CallerMemberName] string propertyName = "")
-    {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void RaisePropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        [Conditional("DEBUG")]
+        internal void SetLeft(double x)
+        { Left = x; }
+
+        [Conditional("DEBUG")]
+        internal void SettTop(double x)
+        { Top = x; }
+
     }
-
-    #endregion private
-
-    #region testing instrumentation
-
-    [Conditional("DEBUG")]
-    internal void SetLeft(double x)
-    { Left = x; }
-
-    [Conditional("DEBUG")]
-    internal void SettTop(double x)
-    { Top = x; }
-
-    #endregion testing instrumentation
-  }
 }

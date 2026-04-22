@@ -19,8 +19,6 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase, IDisposable
     {
-        #region ctor
-
         public MainWindowViewModel() : this(null)
         { }
 
@@ -32,10 +30,6 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             StartCommand = new RelayCommand(ExecuteStart, CanExecuteStart);
             StopCommand = new RelayCommand(ExecuteStop, CanExecuteStop);
         }
-
-        #endregion ctor
-
-        #region public API
 
         public ObservableCollection<ModelIBall> Balls { get; } = new ObservableCollection<ModelIBall>();
 
@@ -70,7 +64,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             set { _viewHeight = value; RaisePropertyChanged(); }
         }
 
-        private double _borderThickness = 4.0; 
+        private double _borderThickness = 4.0;
         public double BorderThickness
         {
             get => _borderThickness;
@@ -99,16 +93,12 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
         }
 
 
-        #endregion public API
-
-        #region Komendy - logika
-
         private bool _isRunning = false;
 
         private void ExecuteStart()
         {
 
-            
+
             if (Disposed)
                 throw new ObjectDisposedException(nameof(MainWindowViewModel));
 
@@ -140,42 +130,36 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             return _isRunning;
         }
 
-        #endregion Komendy - logika
-        #region IDisposable
 
         protected virtual void Dispose(bool disposing)
-    {
-      if (!Disposed)
-      {
-        if (disposing)
         {
-          Balls.Clear();
-          Observer.Dispose();
-          ModelLayer.Dispose();
+            if (!Disposed)
+            {
+                if (disposing)
+                {
+                    Balls.Clear();
+                    Observer.Dispose();
+                    ModelLayer.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                Disposed = true;
+            }
         }
 
-        // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-        // TODO: set large fields to null
-        Disposed = true;
-      }
+        public void Dispose()
+        {
+            if (Disposed)
+                throw new ObjectDisposedException(nameof(MainWindowViewModel));
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        private IDisposable Observer = null;
+        private ModelAbstractApi ModelLayer;
+        private bool Disposed = false;
+
     }
-
-    public void Dispose()
-    {
-      if (Disposed)
-        throw new ObjectDisposedException(nameof(MainWindowViewModel));
-      Dispose(disposing: true);
-      GC.SuppressFinalize(this);
-    }
-
-    #endregion IDisposable
-
-    #region private
-
-    private IDisposable Observer = null;
-    private ModelAbstractApi ModelLayer;
-    private bool Disposed = false;
-
-    #endregion private
-  }
 }

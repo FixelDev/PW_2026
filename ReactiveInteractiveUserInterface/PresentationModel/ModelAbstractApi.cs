@@ -12,39 +12,29 @@ using System.ComponentModel;
 
 namespace TP.ConcurrentProgramming.Presentation.Model
 {
-  public interface IBall : INotifyPropertyChanged
-  {
-    double Top { get; }
-    double Left { get; }
-    double Diameter { get; }
-  }
+    public interface IBall : INotifyPropertyChanged
+    {
+        double Top { get; }
+        double Left { get; }
+        double Diameter { get; }
+    }
 
-  public abstract class ModelAbstractApi : IObservable<IBall>, IDisposable
-  {
+    public abstract class ModelAbstractApi : IObservable<IBall>, IDisposable
+    {
         public abstract void Stop();
         public static ModelAbstractApi CreateModel()
-    {
-      return modelInstance.Value;
-    }
+        {
+            return modelInstance.Value;
+        }
 
         public abstract void Start(int numberOfBalls, double viewWidth, double viewHeight, double border, double ballDiameter);
 
-        #region IObservable
-
         public abstract IDisposable Subscribe(IObserver<IBall> observer);
 
-    #endregion IObservable
 
-    #region IDisposable
+        public abstract void Dispose();
 
-    public abstract void Dispose();
+        private static Lazy<ModelAbstractApi> modelInstance = new Lazy<ModelAbstractApi>(() => new ModelImplementation());
 
-    #endregion IDisposable
-
-    #region private
-
-    private static Lazy<ModelAbstractApi> modelInstance = new Lazy<ModelAbstractApi>(() => new ModelImplementation());
-
-    #endregion private
-  }
+    }
 }
