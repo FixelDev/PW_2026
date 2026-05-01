@@ -26,9 +26,6 @@
             <Button Content="Start" Command="{Binding StartCommand}" Width="80" Margin="0,0,10,0"/>
             <Button Content="Stop" Command="{Binding StopCommand}" Width="80"/>
 
-            <TextBlock Text="Średnica kuli:" VerticalAlignment="Center" Margin="10,0,5,0"/>
-            <Slider Minimum="10" Maximum="100" Value="{Binding BallDiameter}" Width="80" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding BallDiameter, StringFormat={}{0:F0}}" VerticalAlignment="Center" Margin="5,0,0,0"/>
         </StackPanel>
 
         <Border Grid.Row="1" BorderThickness="{Binding BorderThickness}" BorderBrush="Green" Height="{Binding ViewHeight}" Width="{Binding ViewWidth}" 

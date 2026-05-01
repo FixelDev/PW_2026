@@ -1,13 +1,5 @@
-﻿//____________________________________________________________________________________________________________________________________
-//
-//  Copyright (C) 2024, Mariusz Postol LODZ POLAND.
-//
-//  To be in touch join the community by pressing the `Watch` button and get started commenting using the discussion panel at
-//
-//  https://github.com/mpostol/TP/discussions/182
-//
-//_____________________________________________________________________________________________________________________________________
-
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using TP.ConcurrentProgramming.BusinessLogic;
 
 namespace TP.ConcurrentProgramming.Presentation.Model.Test
@@ -43,7 +35,7 @@ namespace TP.ConcurrentProgramming.Presentation.Model.Test
                 IDisposable subscription = newInstance.Subscribe(x => { });
                 newInstance.CheckBallChangedEvent(x => Assert.IsFalse(x));
 
-                newInstance.Start(10, 400.0, 420.0, 4.0, 20.0);
+                newInstance.Start(10, 400.0, 420.0, 4.0);
 
                 Assert.AreEqual<int>(10, underneathLayerFixture.NumberOfBalls);
                 subscription.Dispose();
@@ -65,7 +57,7 @@ namespace TP.ConcurrentProgramming.Presentation.Model.Test
             {
             }
 
-            public override void Start(int numberOfBalls, double ballDiameter, Action<IPosition, BusinessLogic.IBall> upperLayerHandler)
+            public override void Start(int numberOfBalls, Action<IPosition, BusinessLogic.IBall> upperLayerHandler)
             {
                 NumberOfBalls = numberOfBalls;
                 Assert.IsNotNull(upperLayerHandler);

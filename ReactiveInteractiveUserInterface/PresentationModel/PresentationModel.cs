@@ -48,10 +48,10 @@ namespace TP.ConcurrentProgramming.Presentation.Model
             return eventObservable.Subscribe(x => observer.OnNext(x.EventArgs.Ball), ex => observer.OnError(ex), () => observer.OnCompleted());
         }
 
-        public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border, double ballDiameter)
+        public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border)
         {
-
-            layerBellow.Start(numberOfBalls, ballDiameter, (pos, ball) => StartHandler(pos, ball, viewWidth, viewHeight, border));
+           
+            layerBellow.Start(numberOfBalls, (pos, ball) => StartHandler(pos, ball, viewWidth, viewHeight, border));
         }
 
 
@@ -65,15 +65,15 @@ namespace TP.ConcurrentProgramming.Presentation.Model
             double scaleX = effectiveWidth / logicDimensions.TableWidth;
             double scaleY = effectiveHeight / logicDimensions.TableHeight;
 
-
-            double scaledDiameter = logicDimensions.BallDimension * scaleX;
+            // ZMIANA: Pobieramy rozmiar bezpośrednio z obiektu kuli i skalujemy go!
+            double scaledDiameter = ball.Diameter * scaleX;
 
             ModelBall newBall = new ModelBall(position.x, position.y, ball, scaleX, scaleY)
             {
                 Diameter = scaledDiameter
             };
 
-            BallChanged.Invoke(this, new BallChaneEventArgs() { Ball = newBall });
+            BallChanged?.Invoke(this, new BallChaneEventArgs() { Ball = newBall });
         }
 
 

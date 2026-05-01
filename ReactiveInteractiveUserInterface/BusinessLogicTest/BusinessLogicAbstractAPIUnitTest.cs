@@ -1,13 +1,5 @@
-﻿//____________________________________________________________________________________________________________________________________
-//
-//  Copyright (C) 2024, Mariusz Postol LODZ POLAND.
-//
-//  To be in touch join the community by pressing the `Watch` button and get started commenting using the discussion panel at
-//
-//  https://github.com/mpostol/TP/discussions/182
-//
-//_____________________________________________________________________________________________________________________________________
-
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using TP.ConcurrentProgramming.BusinessLogic;
 
 namespace TP.ConcurrentProgramming.BusinessLogic.Test
@@ -28,10 +20,10 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         [TestMethod]
         public void GetDimensionsTestMethod()
         {
-            Assert.AreEqual<Dimensions>(new Dimensions(20.0, 420.0, 400.0), BusinessLogicAbstractAPI.GetDimensions);
+            // Usunięto parametr BallDimension (20.0)
+            Assert.AreEqual<Dimensions>(new Dimensions(420.0, 400.0), BusinessLogicAbstractAPI.GetDimensions);
 
-
-            Dimensions newDimensions = new Dimensions(30.0, 500.0, 500.0);
+            Dimensions newDimensions = new Dimensions(500.0, 500.0);
             BusinessLogicAbstractAPI.GetDimensions = newDimensions;
             Assert.AreEqual<Dimensions>(newDimensions, BusinessLogicAbstractAPI.GetDimensions);
         }

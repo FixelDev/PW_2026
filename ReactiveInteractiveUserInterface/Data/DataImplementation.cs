@@ -16,37 +16,56 @@ namespace TP.ConcurrentProgramming.Data
     internal class DataImplementation : DataAbstractAPI
     {
 
-        public DataImplementation()
-        {
-            MoveTimer = new Timer(Move, null, Timeout.Infinite, Timeout.Infinite);
-        }
+        private bool Disposed = false;
+        private Random RandomGenerator = new();
+        private List<Ball> BallsList = new();
+        private List<Task> BallTasks = new();
+        private CancellationTokenSource? Cts;
+
+        public DataImplementation() { }
 
         public override void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler)
         {
-            if (Disposed)
-                throw new ObjectDisposedException(nameof(DataImplementation));
-            if (upperLayerHandler == null)
-                throw new ArgumentNullException(nameof(upperLayerHandler));
+            if (Disposed) throw new ObjectDisposedException(nameof(DataImplementation));
+            if (upperLayerHandler == null) throw new ArgumentNullException(nameof(upperLayerHandler));
 
-            Random random = new Random();
+            Stop();
+            Cts = new CancellationTokenSource();
+
             for (int i = 0; i < numberOfBalls; i++)
             {
-                Vector startingPosition = new(random.Next(100, 400 - 100), random.Next(100, 400 - 100));
-                Ball newBall = new(startingPosition, startingPosition);
-                upperLayerHandler(startingPosition, newBall);
-                BallsList.Add(newBall);
-            }
+                Vector startingPosition = new Vector(RandomGenerator.Next(100, 300), RandomGenerator.Next(100, 300));
+                Vector startingVelocity = new Vector((RandomGenerator.NextDouble() - 0.5) * 5, (RandomGenerator.NextDouble() - 0.5) * 5);
+            
+                double radius = RandomGenerator.Next(10, 30);
+                double mass = radius; 
 
-            MoveTimer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(16.6));
+                Ball newBall = new Ball(startingPosition, startingVelocity, mass, radius);
+                BallsList.Add(newBall);
+
+                upperLayerHandler(startingPosition, newBall);
+
+                BallTasks.Add(newBall.StartMovingAsync(Cts.Token));
+            }
         }
 
         public override void Stop()
         {
-            MoveTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            if (Cts != null)
+            {
+                Cts.Cancel();
+                Cts.Dispose();
+                Cts = null;
+            }
+
+            foreach (var ball in BallsList)
+            {
+                ball.Dispose();
+            }
 
             BallsList.Clear();
+            BallTasks.Clear();
         }
-
 
         protected virtual void Dispose(bool disposing)
         {
@@ -54,35 +73,20 @@ namespace TP.ConcurrentProgramming.Data
             {
                 if (disposing)
                 {
-                    MoveTimer.Dispose();
-                    BallsList.Clear();
+                    Stop();
                 }
                 Disposed = true;
             }
             else
+            {
                 throw new ObjectDisposedException(nameof(DataImplementation));
+            }
         }
 
         public override void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-
-
-        //private bool disposedValue;
-        private bool Disposed = false;
-
-        private readonly Timer MoveTimer;
-        private Random RandomGenerator = new();
-        private List<Ball> BallsList = [];
-
-        private void Move(object? x)
-        {
-            foreach (Ball item in BallsList)
-                item.Move(new Vector((RandomGenerator.NextDouble() - 0.5) * 30, (RandomGenerator.NextDouble() - 0.5) * 30));
         }
 
 

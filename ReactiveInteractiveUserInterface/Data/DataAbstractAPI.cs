@@ -42,12 +42,20 @@ namespace TP.ConcurrentProgramming.Data
         double y { get; init; }
     }
 
-    public interface IBall
+    public interface IBall : IDisposable
     {
         event EventHandler<IVector> NewPositionNotification;
 
         IVector Velocity { get; set; }
+        IVector Position { get; }
+        double Mass { get; }
+        double Radius { get; }
     }
+
+
+
+
+
 
 }
 

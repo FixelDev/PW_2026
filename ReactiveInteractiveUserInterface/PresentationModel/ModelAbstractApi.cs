@@ -27,7 +27,7 @@ namespace TP.ConcurrentProgramming.Presentation.Model
             return modelInstance.Value;
         }
 
-        public abstract void Start(int numberOfBalls, double viewWidth, double viewHeight, double border, double ballDiameter);
+        public abstract void Start(int numberOfBalls, double viewWidth, double viewHeight, double border);
 
         public abstract IDisposable Subscribe(IObserver<IBall> observer);
 

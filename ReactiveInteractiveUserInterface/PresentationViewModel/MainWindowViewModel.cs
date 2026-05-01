@@ -78,31 +78,14 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             }
         }
 
-        private double _ballDiameter = BusinessLogicAbstractAPI.GetDimensions.BallDimension;
-        public double BallDiameter
-        {
-            get => _ballDiameter;
-            set
-            {
-                if (_ballDiameter != value)
-                {
-                    _ballDiameter = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-
         private bool _isRunning = false;
 
         private void ExecuteStart()
         {
-
-
             if (Disposed)
                 throw new ObjectDisposedException(nameof(MainWindowViewModel));
 
-            ModelLayer.Start(NumberOfBalls, ViewWidth, ViewHeight, BorderThickness, BallDiameter);
+            ModelLayer.Start(NumberOfBalls, ViewWidth, ViewHeight, BorderThickness);
             _isRunning = true;
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();

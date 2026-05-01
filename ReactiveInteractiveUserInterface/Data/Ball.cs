@@ -12,29 +12,59 @@ namespace TP.ConcurrentProgramming.Data
 {
     internal class Ball : IBall
     {
-        internal Ball(Vector initialPosition, Vector initialVelocity)
-        {
-            Position = initialPosition;
-            Velocity = initialVelocity;
-        }
-
+        private bool _isMoving = false;
+        private readonly object _lockGuard = new object();
+        private IVector _position;
+        private IVector _velocity;
 
         public event EventHandler<IVector>? NewPositionNotification;
 
-        public IVector Velocity { get; set; }
+        public double Mass { get; }
+        public double Radius { get; }
 
-
-        private Vector Position;
-
-        private void RaiseNewPositionChangeNotification()
+        public IVector Position
         {
-            NewPositionNotification?.Invoke(this, Position);
+            get { lock (_lockGuard) return _position; }
+            private set { lock (_lockGuard) _position = value; }
         }
 
-        internal void Move(Vector delta)
+        public IVector Velocity
         {
-            Position = new Vector(Position.x + delta.x, Position.y + delta.y);
-            RaiseNewPositionChangeNotification();
+            get { lock (_lockGuard) return _velocity; }
+            set { lock (_lockGuard) _velocity = value; }
+        }
+
+        internal Ball(Vector initialPosition, Vector initialVelocity, double mass, double radius)
+        {
+            _position = initialPosition;
+            _velocity = initialVelocity;
+            Mass = mass;
+            Radius = radius;
+        }
+
+        internal async Task StartMovingAsync(CancellationToken cancellationToken)
+        {
+            _isMoving = true;
+
+            while (_isMoving && !cancellationToken.IsCancellationRequested)
+            {
+                Move();
+                await Task.Delay(16, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private void Move()
+        {
+            lock (_lockGuard)
+            {
+                _position = new Vector(_position.x + _velocity.x, _position.y + _velocity.y);
+            }
+            NewPositionNotification?.Invoke(this, _position);
+        }
+
+        public void Dispose()
+        {
+            _isMoving = false;
         }
     }
 }

@@ -1,14 +1,4 @@
-﻿//____________________________________________________________________________________________________________________________________
-//
-//  Copyright (C) 2024, Mariusz Postol LODZ POLAND.
-//
-//  To be in touch join the community by pressing the `Watch` button and get started commenting using the discussion panel at
-//
-//  https://github.com/mpostol/TP/discussions/182
-//
-//_____________________________________________________________________________________________________________________________________
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
@@ -38,13 +28,17 @@ namespace TP.ConcurrentProgramming.Data.Test
             bool newInstanceDisposed = false;
             newInstance.CheckObjectDisposed(x => newInstanceDisposed = x);
             Assert.IsFalse(newInstanceDisposed);
+
             newInstance.Dispose();
+
             newInstance.CheckObjectDisposed(x => newInstanceDisposed = x);
             Assert.IsTrue(newInstanceDisposed);
+
             IEnumerable<IBall>? ballsList = null;
             newInstance.CheckBallsList(x => ballsList = x);
             Assert.IsNotNull(ballsList);
             newInstance.CheckNumberOfBalls(x => Assert.AreEqual<int>(0, x));
+
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Dispose());
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, (position, ball) => { }));
         }
@@ -65,6 +59,7 @@ namespace TP.ConcurrentProgramming.Data.Test
                       Assert.IsTrue(startingPosition.y >= 0);
                       Assert.IsNotNull(ball);
                   });
+
                 Assert.AreEqual<int>(numberOfBalls2Create, numberOfCallbackInvoked);
                 newInstance.CheckNumberOfBalls(x => Assert.AreEqual<int>(10, x));
             }

@@ -20,9 +20,9 @@ namespace TP.ConcurrentProgramming.BusinessLogic
         }
 
 
-        public static Dimensions GetDimensions { get; set; } = new Dimensions(20.0, 420.0, 400.0);
+        public static Dimensions GetDimensions { get; set; } = new Dimensions(420.0, 400.0);
 
-        public abstract void Start(int numberOfBalls, double ballDiameter, Action<IPosition, IBall> upperLayerHandler);
+        public abstract void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler);
 
         public abstract void Dispose();
 
@@ -38,7 +38,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic
     /// <remarks>
     /// Must be abstract
     /// </remarks>
-    public record Dimensions(double BallDimension, double TableHeight, double TableWidth);
+    public record Dimensions(double TableHeight, double TableWidth);
 
     public interface IPosition
     {
@@ -49,5 +49,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic
     public interface IBall
     {
         event EventHandler<IPosition> NewPositionNotification;
+        double Diameter { get; }
     }
 }

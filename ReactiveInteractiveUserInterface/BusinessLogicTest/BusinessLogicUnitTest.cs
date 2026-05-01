@@ -1,13 +1,5 @@
-﻿//____________________________________________________________________________________________________________________________________
-//
-//  Copyright (C) 2024, Mariusz Postol LODZ POLAND.
-//
-//  To be in touch join the community by pressing the `Watch` button and get started commenting using the discussion panel at
-//
-//  https://github.com/mpostol/TP/discussions/182
-//
-//_____________________________________________________________________________________________________________________________________
-
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using TP.ConcurrentProgramming.Data;
 
 namespace TP.ConcurrentProgramming.BusinessLogic.Test
@@ -40,7 +32,8 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
             Assert.IsTrue(newInstanceDisposed);
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Dispose());
 
-            Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, 20.0, (position, ball) => { }));
+            // Usunięto argument średnicy kuli
+            Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, (position, ball) => { }));
             Assert.IsTrue(dataLayerFixcure.Disposed);
         }
 
@@ -52,15 +45,13 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
             {
                 int called = 0;
                 int numberOfBalls2Create = 10;
-                double ballDiameter = 20.0;
 
-
+                // Usunięto argument średnicy kuli
                 newInstance.Start(
                   numberOfBalls2Create,
-                  ballDiameter,
                   (startingPosition, ball) => { called++; Assert.IsNotNull(startingPosition); Assert.IsNotNull(ball); });
 
-                Assert.AreEqual<int>(1, called);
+                Assert.AreEqual<int>(1, called); // Handler wywołany z Fixture
                 Assert.IsTrue(dataLayerFixcure.StartCalled);
                 Assert.AreEqual<int>(numberOfBalls2Create, dataLayerFixcure.NumberOfBallseCreated);
             }
@@ -76,6 +67,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
                 Assert.IsTrue(dataLayerFixcure.StopCalled);
             }
         }
+
         private class DataLayerConstructorFixcure : Data.DataAbstractAPI
         {
             public override void Dispose() { }
@@ -129,8 +121,12 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
 
             private class DataBallFixture : Data.IBall
             {
-
                 public IVector Velocity { get; set; } = new DataVectorFixture();
+                public IVector Position { get; } = new DataVectorFixture();
+                public double Mass { get; } = 15.0;
+                public double Radius { get; } = 15.0;
+
+                public void Dispose() { }
 
                 public event EventHandler<IVector>? NewPositionNotification = null;
             }

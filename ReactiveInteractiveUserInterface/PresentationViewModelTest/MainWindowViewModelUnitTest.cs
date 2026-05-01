@@ -73,7 +73,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
             {
             }
 
-            public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border, double ballDiameter)
+            public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border)
             {
                 Started = numberOfBalls;
             }
@@ -107,8 +107,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
             public override void Stop()
             {
             }
-
-            public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border, double ballDiameter)
+            public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border)
             {
                 for (int i = 0; i < numberOfBalls; i++)
                 {

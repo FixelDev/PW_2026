@@ -15,18 +15,8 @@ namespace TP.ConcurrentProgramming.BusinessLogic
 {
     internal class BusinessLogicImplementation : BusinessLogicAbstractAPI
     {
-        public override void Stop()
-        {
-            layerBellow.Stop();
-        }
-        public BusinessLogicImplementation() : this(null)
-        { }
-
-        internal BusinessLogicImplementation(UnderneathLayerAPI? underneathLayer)
-        {
-            layerBellow = underneathLayer == null ? UnderneathLayerAPI.GetDataLayer() : underneathLayer;
-        }
-
+        internal List<Ball> LogicBalls { get; } = new List<Ball>();
+        internal readonly object CollisionLock = new object();
 
         public override void Dispose()
         {
@@ -36,15 +26,42 @@ namespace TP.ConcurrentProgramming.BusinessLogic
             Disposed = true;
         }
 
-        public override void Start(int numberOfBalls, double ballDiameter, Action<IPosition, IBall> upperLayerHandler)
+        internal BusinessLogicImplementation(UnderneathLayerAPI? underneathLayer)
+        {
+            layerBellow = underneathLayer == null ? UnderneathLayerAPI.GetDataLayer() : underneathLayer;
+        }
+
+        public BusinessLogicImplementation() : this(null)
+        { }
+
+
+
+        public override void Stop()
+        {
+            layerBellow.Stop();
+        }
+
+
+
+
+
+
+
+        public override void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler)
         {
             if (Disposed) throw new ObjectDisposedException(nameof(BusinessLogicImplementation));
-            if (upperLayerHandler == null) throw new ArgumentNullException(nameof(upperLayerHandler));
 
+            BusinessLogicAbstractAPI.GetDimensions = new Dimensions(GetDimensions.TableHeight, GetDimensions.TableWidth);
 
-            BusinessLogicAbstractAPI.GetDimensions = new Dimensions(ballDiameter, GetDimensions.TableHeight, GetDimensions.TableWidth);
+            LogicBalls.Clear();
 
-            layerBellow.Start(numberOfBalls, (startingPosition, databall) => upperLayerHandler(new Position(startingPosition.x, startingPosition.y), new Ball(databall)));
+            layerBellow.Start(numberOfBalls, (startingPosition, databall) =>
+            {
+                var logicBall = new Ball(databall, this);
+                LogicBalls.Add(logicBall);
+
+                upperLayerHandler(new Position(startingPosition.x, startingPosition.y), logicBall);
+            });
         }
 
         private bool Disposed = false;
