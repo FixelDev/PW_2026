@@ -32,7 +32,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
             Assert.IsTrue(newInstanceDisposed);
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Dispose());
 
-            // Usunięto argument średnicy kuli
             Assert.ThrowsException<ObjectDisposedException>(() => newInstance.Start(0, (position, ball) => { }));
             Assert.IsTrue(dataLayerFixcure.Disposed);
         }
@@ -46,12 +45,11 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
                 int called = 0;
                 int numberOfBalls2Create = 10;
 
-                // Usunięto argument średnicy kuli
                 newInstance.Start(
                   numberOfBalls2Create,
                   (startingPosition, ball) => { called++; Assert.IsNotNull(startingPosition); Assert.IsNotNull(ball); });
 
-                Assert.AreEqual<int>(1, called); // Handler wywołany z Fixture
+                Assert.AreEqual<int>(1, called);
                 Assert.IsTrue(dataLayerFixcure.StartCalled);
                 Assert.AreEqual<int>(numberOfBalls2Create, dataLayerFixcure.NumberOfBallseCreated);
             }
