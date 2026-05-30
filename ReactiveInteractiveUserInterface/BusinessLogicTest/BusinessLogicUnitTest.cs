@@ -49,7 +49,7 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
                   numberOfBalls2Create,
                   (startingPosition, ball) => { called++; Assert.IsNotNull(startingPosition); Assert.IsNotNull(ball); });
 
-                Assert.AreEqual<int>(1, called); 
+                Assert.AreEqual<int>(1, called);
                 Assert.IsTrue(dataLayerFixcure.StartCalled);
                 Assert.AreEqual<int>(numberOfBalls2Create, dataLayerFixcure.NumberOfBallseCreated);
             }
