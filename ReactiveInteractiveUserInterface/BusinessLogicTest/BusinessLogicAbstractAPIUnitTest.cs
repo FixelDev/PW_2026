@@ -20,7 +20,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic.Test
         [TestMethod]
         public void GetDimensionsTestMethod()
         {
-            // Usunięto parametr BallDimension (20.0)
             Assert.AreEqual<Dimensions>(new Dimensions(420.0, 400.0), BusinessLogicAbstractAPI.GetDimensions);
 
             Dimensions newDimensions = new Dimensions(500.0, 500.0);

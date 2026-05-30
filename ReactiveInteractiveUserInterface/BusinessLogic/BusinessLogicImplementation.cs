@@ -41,12 +41,6 @@ namespace TP.ConcurrentProgramming.BusinessLogic
             layerBellow.Stop();
         }
 
-
-
-
-
-
-
         public override void Start(int numberOfBalls, Action<IPosition, IBall> upperLayerHandler)
         {
             if (Disposed) throw new ObjectDisposedException(nameof(BusinessLogicImplementation));

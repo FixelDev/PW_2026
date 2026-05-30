@@ -8,6 +8,8 @@
 //
 //_____________________________________________________________________________________________________________________________________
 
+using System.Diagnostics;
+
 namespace TP.ConcurrentProgramming.Data
 {
     internal class Ball : IBall
@@ -16,6 +18,7 @@ namespace TP.ConcurrentProgramming.Data
         private readonly object _lockGuard = new object();
         private IVector _position;
         private IVector _velocity;
+        private readonly DiagnosticsLogger _logger;
 
         public event EventHandler<IVector>? NewPositionNotification;
 
@@ -34,30 +37,42 @@ namespace TP.ConcurrentProgramming.Data
             set { lock (_lockGuard) _velocity = value; }
         }
 
-        internal Ball(Vector initialPosition, Vector initialVelocity, double mass, double radius)
+        internal Ball(Vector initialPosition, Vector initialVelocity, double mass, double radius, DiagnosticsLogger logger)
         {
             _position = initialPosition;
             _velocity = initialVelocity;
             Mass = mass;
             Radius = radius;
+            _logger = logger;
         }
 
         internal async Task StartMovingAsync(CancellationToken cancellationToken)
         {
             _isMoving = true;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             while (_isMoving && !cancellationToken.IsCancellationRequested)
             {
-                Move();
+                double deltaTime = stopwatch.Elapsed.TotalSeconds;
+                stopwatch.Restart();
+
+                Move(deltaTime);
+
+                _logger.LogBallState(this);
+
                 await Task.Delay(16, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private void Move()
+        private void Move(double deltaTime)
         {
             lock (_lockGuard)
             {
-                _position = new Vector(_position.x + _velocity.x, _position.y + _velocity.y);
+                _position = new Vector(
+                    _position.x + (_velocity.x * deltaTime),
+                    _position.y + (_velocity.y * deltaTime)
+                );
             }
             NewPositionNotification?.Invoke(this, _position);
         }

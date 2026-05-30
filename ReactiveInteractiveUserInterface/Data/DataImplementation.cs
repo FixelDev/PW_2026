@@ -15,14 +15,14 @@ namespace TP.ConcurrentProgramming.Data
 {
     internal class DataImplementation : DataAbstractAPI
     {
-
         private bool Disposed = false;
         private Random RandomGenerator = new();
         private List<Ball> BallsList = new();
         private List<Task> BallTasks = new();
         private CancellationTokenSource? Cts;
 
-        public DataImplementation() { }
+
+        private DiagnosticsLogger? _logger;
 
         public override void Start(int numberOfBalls, Action<IVector, IBall> upperLayerHandler)
         {
@@ -31,16 +31,18 @@ namespace TP.ConcurrentProgramming.Data
 
             Stop();
             Cts = new CancellationTokenSource();
+            _logger = new DiagnosticsLogger(); 
 
             for (int i = 0; i < numberOfBalls; i++)
             {
                 Vector startingPosition = new Vector(RandomGenerator.Next(100, 300), RandomGenerator.Next(100, 300));
-                Vector startingVelocity = new Vector((RandomGenerator.NextDouble() - 0.5) * 5, (RandomGenerator.NextDouble() - 0.5) * 5);
-            
-                double radius = RandomGenerator.Next(10, 30);
-                double mass = radius; 
 
-                Ball newBall = new Ball(startingPosition, startingVelocity, mass, radius);
+                Vector startingVelocity = new Vector((RandomGenerator.NextDouble() - 0.5) * 250, (RandomGenerator.NextDouble() - 0.5) * 250);
+
+                double radius = RandomGenerator.Next(10, 30);
+                double mass = radius;
+
+                Ball newBall = new Ball(startingPosition, startingVelocity, mass, radius, _logger);
                 BallsList.Add(newBall);
 
                 upperLayerHandler(startingPosition, newBall);
@@ -65,8 +67,14 @@ namespace TP.ConcurrentProgramming.Data
 
             BallsList.Clear();
             BallTasks.Clear();
-        }
 
+           
+            if (_logger != null)
+            {
+                _logger.Dispose();
+                _logger = null;
+            }
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!Disposed)

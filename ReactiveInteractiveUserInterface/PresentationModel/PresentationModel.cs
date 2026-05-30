@@ -65,7 +65,6 @@ namespace TP.ConcurrentProgramming.Presentation.Model
             double scaleX = effectiveWidth / logicDimensions.TableWidth;
             double scaleY = effectiveHeight / logicDimensions.TableHeight;
 
-            // ZMIANA: Pobieramy rozmiar bezpośrednio z obiektu kuli i skalujemy go!
             double scaledDiameter = ball.Diameter * scaleX;
 
             ModelBall newBall = new ModelBall(position.x, position.y, ball, scaleX, scaleY)
