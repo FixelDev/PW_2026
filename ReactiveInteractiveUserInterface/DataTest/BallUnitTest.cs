@@ -31,11 +31,9 @@ namespace TP.ConcurrentProgramming.Data.Test
         [TestMethod]
         public void MoveTestMethod()
         {
-            Vector initialPosition = new(10.0, 10.0);
-            
-            Vector initialVelocity = new(100.0, 200.0);
-
             using DiagnosticsLogger testLogger = new DiagnosticsLogger(TestLogFile);
+            Vector initialPosition = new(10.0, 10.0);
+            Vector initialVelocity = new(2.0, 3.0);
             Ball newInstance = new(initialPosition, initialVelocity, 10.0, 10.0, testLogger);
 
             IVector currentPosition = new Vector(0.0, 0.0);
@@ -47,18 +45,12 @@ namespace TP.ConcurrentProgramming.Data.Test
                 currentPosition = position;
                 numberOfCallBackCalled++;
             };
-
             MethodInfo moveMethod = typeof(Ball).GetMethod("Move", BindingFlags.NonPublic | BindingFlags.Instance)!;
-
-
-            double deltaTime = 0.1;
-            moveMethod.Invoke(newInstance, new object[] { deltaTime });
+            moveMethod.Invoke(newInstance, null);
 
             Assert.AreEqual<int>(1, numberOfCallBackCalled);
- 
-            Assert.AreEqual<double>(20.0, currentPosition.x);
-    
-            Assert.AreEqual<double>(30.0, currentPosition.y);
+            Assert.AreEqual<double>(12.0, currentPosition.x);
+            Assert.AreEqual<double>(13.0, currentPosition.y);
         }
 
         [TestCleanup]

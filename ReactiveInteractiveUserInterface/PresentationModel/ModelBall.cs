@@ -84,5 +84,23 @@ namespace TP.ConcurrentProgramming.Presentation.Model
         internal void SettTop(double x)
         { Top = x; }
 
+
+
+        private string _color = "#FF0000";
+        public string Color
+        {
+            get { return _color; }
+            set
+            {
+                if (_color == value)
+                    return;
+                _color = value;
+                RaisePropertyChanged(); 
+            }
+        }
+
+
+
+
     }
 }

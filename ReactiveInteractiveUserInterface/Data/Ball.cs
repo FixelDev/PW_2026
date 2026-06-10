@@ -49,30 +49,20 @@ namespace TP.ConcurrentProgramming.Data
         internal async Task StartMovingAsync(CancellationToken cancellationToken)
         {
             _isMoving = true;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
 
             while (_isMoving && !cancellationToken.IsCancellationRequested)
             {
-                double deltaTime = stopwatch.Elapsed.TotalSeconds;
-                stopwatch.Restart();
-
-                Move(deltaTime);
-
+                Move();
                 _logger.LogBallState(this);
-
                 await Task.Delay(16, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private void Move(double deltaTime)
+        private void Move()
         {
             lock (_lockGuard)
             {
-                _position = new Vector(
-                    _position.x + (_velocity.x * deltaTime),
-                    _position.y + (_velocity.y * deltaTime)
-                );
+                _position = new Vector(_position.x + _velocity.x, _position.y + _velocity.y);
             }
             NewPositionNotification?.Invoke(this, _position);
         }

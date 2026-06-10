@@ -36,8 +36,7 @@ namespace TP.ConcurrentProgramming.Data
             for (int i = 0; i < numberOfBalls; i++)
             {
                 Vector startingPosition = new Vector(RandomGenerator.Next(100, 300), RandomGenerator.Next(100, 300));
-
-                Vector startingVelocity = new Vector((RandomGenerator.NextDouble() - 0.5) * 250, (RandomGenerator.NextDouble() - 0.5) * 250);
+                Vector startingVelocity = new Vector((RandomGenerator.NextDouble() - 0.5) * 5, (RandomGenerator.NextDouble() - 0.5) * 5);
 
                 double radius = RandomGenerator.Next(10, 30);
                 double mass = radius;

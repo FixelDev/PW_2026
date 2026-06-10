@@ -9,6 +9,8 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TP.ConcurrentProgramming.BusinessLogic;
 using TP.ConcurrentProgramming.Presentation.Model;
@@ -21,6 +23,10 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
     {
         public MainWindowViewModel() : this(null)
         { }
+
+        private PeriodicTimer _colorTimer;
+        private CancellationTokenSource _colorTimerCts;
+        private readonly Random _randomGenerator = new Random();
 
         internal MainWindowViewModel(ModelAbstractApi modelLayerAPI)
         {
@@ -87,8 +93,34 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
 
             ModelLayer.Start(NumberOfBalls, ViewWidth, ViewHeight, BorderThickness);
             _isRunning = true;
+
+            
+            _colorTimerCts = new CancellationTokenSource();
+            _colorTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(500)); 
+            _ = ChangeColorsLoopAsync(_colorTimerCts.Token);
+
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
+        }
+
+        private async Task ChangeColorsLoopAsync(CancellationToken token)
+        {
+            try
+            {
+                
+                while (await _colorTimer.WaitForNextTickAsync(token))
+                {
+                    foreach (var ball in Balls)
+                    {
+                        
+                        ball.Color = $"#{_randomGenerator.Next(0x1000000):X6}";
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+              
+            }
         }
 
         private bool CanExecuteStart()
@@ -99,10 +131,12 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
         private void ExecuteStop()
         {
             ModelLayer.Stop();
-
             Balls.Clear();
-
             _isRunning = false;
+
+       
+            _colorTimerCts?.Cancel();
+            _colorTimer?.Dispose();
 
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
@@ -120,13 +154,14 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel
             {
                 if (disposing)
                 {
+                    _colorTimerCts?.Cancel();
+                    _colorTimerCts?.Dispose();
+                    _colorTimer?.Dispose();
+
                     Balls.Clear();
                     Observer.Dispose();
                     ModelLayer.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 Disposed = true;
             }
         }

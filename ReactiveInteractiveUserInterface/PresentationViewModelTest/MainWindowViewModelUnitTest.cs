@@ -107,6 +107,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
             public override void Stop()
             {
             }
+
             public override void Start(int numberOfBalls, double viewWidth, double viewHeight, double border)
             {
                 for (int i = 0; i < numberOfBalls; i++)
@@ -125,6 +126,7 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
 
             private IObservable<EventPattern<BallChaneEventArgs>>? eventObservable = null;
 
+            
             private class ModelBall : ModelIBall
             {
                 public ModelBall(double top, double left) { }
@@ -132,6 +134,9 @@ namespace TP.ConcurrentProgramming.Presentation.ViewModel.Test
                 public double Diameter => throw new NotImplementedException();
                 public double Top => throw new NotImplementedException();
                 public double Left => throw new NotImplementedException();
+
+               
+                public string Color { get; set; } = "#FFFFFF";
 
                 public event PropertyChangedEventHandler? PropertyChanged;
             }
